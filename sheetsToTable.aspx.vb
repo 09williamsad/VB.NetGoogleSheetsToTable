@@ -2,7 +2,6 @@ Imports Google.Apis.Sheets.v4
 Imports Google.Apis.Sheets.v4.Data
 Public Sub googleSheetGet()	
     Static Dim Scopes As String() = {SheetsService.Scope.Spreadsheets} 'If changing the scope then delete  App_Data\MyGoogleStorage\.credentials\sheets.googleapis.com-dotnet-quickstart.json
-
     Dim ApplicationName As String = "Google Sheets API .NET Quickstart" 'Tutorial name for .net api
 
     Dim location = Server.MapPath("client_secret.json") 'Designate file with sheets api key and use it to setup authentication
@@ -18,17 +17,14 @@ Public Sub googleSheetGet()
 	Dim range As [String] = subsheetID & "!A1:Z300" 'Data range to get, gets data from column A row 1 to column Z row 300
 	
 	Dim request As SpreadsheetsResource.ValuesResource.GetRequest = Service.Spreadsheets.Values.[Get](spreadsheetId, range) 'Make the request
-
-	'Execute the request and get data
-	Dim response1 As ValueRange = request.Execute()
+	Dim response1 As ValueRange = request.Execute() 'Execute the request and get data
 	Dim values As IList(Of IList(Of [Object])) = response1.Values
-	
 	Table1.Rows.Clear() 'Clear table with id Table1 to account for it having data after refreshing
 
 	If values IsNot Nothing AndAlso values.Count > 0 Then 'If data is not nothing and is more than 0
 		For Each row As IList In values 'For each row pulled from sheets
-			If row.Count >= 1 Then
-				Dim tRow As New TableRow() 'Make new row
+			If row.Count >= 1 Then 'If there is a row
+				Dim tRow As New TableRow() 'Make new table row
 				Table1.Rows.Add(tRow) 'Add row to table
 				
 				Dim tCell1 As New TableCell() 'Make new cell
@@ -45,7 +41,7 @@ Public Sub googleSheetGet()
 				Catch ArgumentOutOfRangeException As Exception 'Will catch out of range if empty/blank
 				End Try
 				
-				'Set the start and end ranges of the columns you want to get.
+				'Set the start and end ranges of the further columns you want to get.
 				Dim currentColNum As Integer = 2 'Column C
 				Dim lastColNum as Integer = 10 'Column J
 				Do Until currentColNum > lastColNum 'Loop through the sheet data and make a table cell for each column cell
@@ -56,7 +52,7 @@ Public Sub googleSheetGet()
 					Catch ArgumentOutOfRangeException As Exception 'Will catch out of range if empty/blank
 					End Try
 					currentColNum = currentColNum + 1
-				Loop
+				Loop 'Repeat until desired columns have been added.
 			End If
 		Next
 	End If
